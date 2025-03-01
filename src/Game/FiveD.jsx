@@ -413,12 +413,12 @@ const FiveD = ({ timerKey }) => {
             Authorization: `Bearer ${sessionStorage.getItem('token')}`,
           },
         });
-  
+        console.log(response)
         // Filter the data based on the selectedTimer
         const filteredData = response.data.results.filter(
           (item) => item.timerName === selectedTimer
         );
-  
+        console.log("FIltered data is:",filteredData);
         if (filteredData.length > 0) {
           const fetchedData = filteredData[0]; // Use the first matching result
   
@@ -429,7 +429,7 @@ const FiveD = ({ timerKey }) => {
               letter: key,
             })
           );
-  
+          
           setResults(mappedResults);
   
           // Set the total sum from the totalSum field
@@ -766,7 +766,7 @@ const FiveD = ({ timerKey }) => {
     // Reset any other relevant state here, if necessary
     setMultiplier(1); // Reset multiplier if you want
     setCustomBetAmount(""); // Clear custom bet amount input
-    setSelectedValue(null); // Deselect the active tab or value
+    setSelectedValue(null); // Deselect the active  or value
 
     // Close the drawer
     handleCloseDrawer();
@@ -914,6 +914,7 @@ const FiveD = ({ timerKey }) => {
         const filteredBets = response.data.data.filter(
           (bet) => bet.selectedTimer === selectedTimer
         );
+        console.log(filteredBets);
         // console.log("Fetched bets data:", response.data.data);
         // console.log("Selected Timer:", selectedTimer);
         setBets(filteredBets);
@@ -1003,14 +1004,14 @@ const FiveD = ({ timerKey }) => {
 
       announceBetResult();
 
-      // const timer = setTimeout(() => {
-      //   setOpen(false);
-      //   setTimeout(() => {
-      //     setCurrentBetIndex((prevIndex) => prevIndex + 1);
-      //   }, 1000);
-      // }, 2500);
+      const timer = setTimeout(() => {
+        setOpen(false);
+        setTimeout(() => {
+          setCurrentBetIndex((prevIndex) => prevIndex + 1);
+        }, 2000);
+      }, 4000);
 
-      // return () => clearTimeout(timer);
+      return () => clearTimeout(timer);
     } else {
       console.log(
         "No popup to show, either popupQueue is empty or currentBetIndex exceeds queue length."
@@ -2474,7 +2475,7 @@ const FiveD = ({ timerKey }) => {
                                   </Typography>
                                 </Grid>
                                 <Grid item xs={3} sx={{ textAlign: "right" }}>
-                                  <Box
+                                  {bet.status !=="Pending"?<Box
                                     sx={{
                                       border: 1,
                                       borderColor:
@@ -2505,7 +2506,7 @@ const FiveD = ({ timerKey }) => {
                                     >
                                       {bet.status}
                                     </Typography>
-                                  </Box>
+                                  </Box>:""}
                                   <Typography
                                     variant="body2"
                                     sx={{
@@ -2805,7 +2806,7 @@ const FiveD = ({ timerKey }) => {
     padding: "4px 10px",
   }}
 >
-  {["A", "B", "C", "D","E","SUM"].map((letter, index) => (
+  {Object.keys(rows[0]?.sectionOutcome ?? {}).map((letter, index) => (
     <div
       key={index}
       style={{
@@ -2859,97 +2860,25 @@ const FiveD = ({ timerKey }) => {
     </div> */}
 
     {/* Number Circle */}
-    <div
-      style={{
-        background: "transparent",
-        border: "2px solid white",
-        padding: "2px 7px",
-        borderRadius: "50%",
-        color: "#fff",
-        fontWeight: "normal",
-        fontSize: "14px",
-        textAlign: "center",
-        minWidth: "5px",
-      }}
-    >
-      0
-    </div>
-    <div
-      style={{
-        background: "transparent",
-        border: "2px solid white",
-        padding: "2px 7px",
-        borderRadius: "50%",
-        color: "#fff",
-        fontWeight: "normal",
-        fontSize: "14px",
-        textAlign: "center",
-        minWidth: "5px",
-      }}
-    >
-      2
-    </div>
-    <div
-      style={{
-        background: "transparent",
-        border: "2px solid white",
-        padding: "2px 7px",
-        borderRadius: "50%",
-        color: "#fff",
-        fontWeight: "normal",
-        fontSize: "14px",
-        textAlign: "center",
-        minWidth: "5px",
-      }}
-    >
-      7
-    </div>
-    <div
-      style={{
-        background: "transparent",
-        border: "2px solid white",
-        padding: "2px 7px",
-        borderRadius: "50%",
-        color: "#fff",
-        fontWeight: "normal",
-        fontSize: "14px",
-        textAlign: "center",
-        minWidth: "5px",
-      }}
-    >
-      3
-    </div>
-    <div
-      style={{
-        background: "transparent",
-        border: "2px solid white",
-        padding: "2px 7px",
-        borderRadius: "50%",
-        color: "#fff",
-        fontWeight: "normal",
-        fontSize: "14px",
-        textAlign: "center",
-        minWidth: "5px",
-      }}
-    >
-      8
-    </div>
-
-    <div
-      style={{
-        background: "transparent",
-        border: "2px solid white",
-        padding: "2px 7px",
-        borderRadius: "50%",
-        color: "#fff",
-        fontWeight: "normal",
-        fontSize: "14px",
-        textAlign: "center",
-        minWidth: "5px",
-      }}
-    >
-      20
-    </div>
+    {Object.values(rows[0]?.sectionOutcome ?? {}).map((numberObject,index)=>(
+  <div
+  key={index}
+  style={{
+    background: "transparent",
+    border: "2px solid white",
+    padding: "2px 7px",
+    borderRadius: "50%",
+    color: "#fff",
+    fontWeight: "normal",
+    fontSize: "14px",
+    textAlign: "center",
+    minWidth: "5px",
+  }}
+>
+  {numberObject?.number}
+</div>
+    ))}
+  
 
     {/* "Big" Tag */}
     

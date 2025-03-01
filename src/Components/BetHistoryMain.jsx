@@ -33,12 +33,17 @@ import useMediaQuery from "@mui/material/useMediaQuery"
 import { useTheme } from "@mui/material/styles"
 import CalendarDrawer from "./CalendarDrawer"
 import "./BetHistoryStyles.css"
-
+import LotteryIcon from "../../public/GameHistory/lottery.png";
+import LotteryIconOF from "../../public/GameHistory/LotteryUnlight.png";
+import CasinoIconON from "../../public/GameHistory/Casino.png";
+import CasinoIconOF from "../../public/GameHistory/CasionUnLight.png";
+import GameON from "../../public/GameHistory/gameON.png"
+import GameOF from "../../public/GameHistory/gameOF.png"
 const buttons = [
-  { label: "Lottery", icon: <HomeIcon /> , backgroundColor:"#e4911d" },
-  { label: "Casino", icon: <SportsEsportsIcon /> },
-  { label: "Fishing", icon: <CasinoIcon /> },
-  { label: "Run", icon: <AttachMoneyIcon /> },
+  { label: "Lottery", iconOn: LotteryIcon , backgroundColor:"#e4911d" ,iconOf:LotteryIconOF},
+  { label: "Casino", iconOn: CasinoIconON , backgroundColor:"#e4911d" ,iconOf:CasinoIconOF},
+  { label: "Fishing",iconOn: GameON, backgoundColor:"#e4911d" ,iconOf:GameOF},
+  // { label: "Run", icon:iconOn: LotteryIcon , backgroundColor:"#e4911d" ,iconOf:LotteryIconOF},
 ]
 
 const filterOptions = {
@@ -350,39 +355,39 @@ const BetHistoryMain = () => {
             >
               {buttons.map((button) => (
                 <Box
-                  key={button.label}
+                key={button.label}
+                sx={{
+                  minWidth: "25%",
+                  flex: "0 0 auto",
+                  scrollSnapAlign: "start",
+                  marginRight: "8px",
+                  backgroundColor:"rgb(255,149,42)"
+                }}
+              >
+                <IconButton
+                  onClick={() => handleButtonClick(button.label)}
                   sx={{
-                    minWidth: "30%",
-                    flex: "0 0 auto",
-                    scrollSnapAlign: "start",
-                    marginRight: "8px",
-                    backgroundColor:"rgb(255,149,42)"
-                  }}
-                >
-                  <IconButton
-                    onClick={() => handleButtonClick(button.label)}
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "100%",
+                    backgroundColor:
+                      activeButton === button.label ? "rgb(255,149,42)" : "#ffffff",
+                    color: activeButton === button.label ? "white" : "black",
+                    borderRadius: 1,
+                    padding: "2px 0",
+                    transition: "background-color 0.3s ease",
+                    "&:hover": {
                       backgroundColor:
                         activeButton === button.label ? "rgb(255,149,42)" : "#ffffff",
-                      color: activeButton === button.label ? "white" : "black",
-                      borderRadius: 1,
-                      padding: "5px 0",
-                      transition: "background-color 0.3s ease",
-                      "&:hover": {
-                        backgroundColor:
-                          activeButton === button.label ? "rgb(255,149,42)" : "#ffffff",
-                      },
-                    }}
-                  >
-                    {button.icon}
-                    <Typography variant="caption">{button.label}</Typography>
-                  </IconButton>
-                </Box>
+                    },
+                  }}
+                >
+                  {activeButton===button.label?<img src={button.iconOn} style={{width:40}}/>:<img src={button.iconOf}/>}
+                  <Typography variant="caption">{button.label}</Typography>
+                </IconButton>
+              </Box>
               ))}
             </Box>
 
@@ -391,6 +396,7 @@ const BetHistoryMain = () => {
                 padding: "0 16px",
                 display: "flex",
                 justifyContent: "space-between",
+                boxShadow:"none"
               }}
             >
               <Button
@@ -476,7 +482,7 @@ const BetHistoryMain = () => {
                 <Typography color="error">{error}</Typography>
               </Box>
             ) : (
-              <Box padding="16px">
+              <Box padding="16px"  style={{ boxShadow: 'none' }}>
                 {bets.length === 0 ? (
                   <Typography>No data available</Typography>
                 ) : (
@@ -513,59 +519,129 @@ const BetHistoryMain = () => {
                       </div>
 
                       <div className="card-content">
-                        <div className="card-row">
-                          <span className="label">Type</span>
-                          <span className="value">
-                            {" "}
-                            {bet && bet.gameType
-                              ? `${String(bet.gameType).charAt(0).toUpperCase() +
-                              String(bet.gameType).slice(1)
-                              } ${bet.selectedTimer}${bet.selectedTimer === "30sec" ? "ond" : "ute"
-                              }`
-                              : "N/A"}
-                          </span>
-                        </div>
-                        <div className="card-row">
-                          <span className="label">Period</span>
-                          <span className="value">{bet.periodId}</span>
-                        </div>
-                        <div className="card-row">
-                          <span className="label">Order number</span>
-                          <span className="value">{bet.orderId || "N/A"}</span>
-                        </div>
-                        <div className="card-row">
-                          <span className="label">Select</span>
-                          <span className="value">
-                            {typeof selectedItemFilter(bet) === "object"
-                              ? Object.keys(selectedItemFilter(bet)).map(
-                                (section) => (
-                                  <div key={section}>
-                                    {`${section}: ${selectedItemFilter(bet)[section]
-                                      }`}
-                                  </div>
-                                )
-                              )
-                              : selectedItemFilter(bet)}
-                          </span>
-                        </div>
-                        <div className="card-row">
-                          <span className="label">Total bet</span>
-                          <span className="value">
-                            ₹
-                            {bet.gameType === "5d"
-                              ? bet.totalBet
-                              : bet.betAmount}
-                          </span>
-                        </div>
+                      <div style={{ display: "flex" }}>
+  {/* Progress bar column (LHS) */}
+  <div style={{
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    marginRight: "10px",
+    marginTop: "5px"
+  }}>
+    {[...Array(5)].map((_, index) => (
+      <React.Fragment key={index}>
+        <div style={{
+          width: "10px",
+          height: "10px",
+          borderRadius: "50%",
+          border: "2px solid green",
+          backgroundColor: "rgb(8,203,128)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}></div>
+        {index < 4 && (
+          <div style={{
+            width: "1px",
+            flexGrow: 1,
+            borderLeft: "2px dashed green",
+            minHeight: "20px"
+          }}></div>
+        )}
+      </React.Fragment>
+    ))}
+  </div>
 
-                        <div
-                          className="lottery-results-heading"
-                          style={{ textAlign: "left" }}
-                        >
-                          Lottery results
-                        </div>
+  {/* Data column (RHS) */}
+  <div style={{ display: "flex", flexDirection: "column", gap: "5px", flex: 1 }}>
+    <div className="card-row" style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+      <span className="label">Type</span>
+      <span className="value">
+        {bet && bet.gameType
+          ? `${String(bet.gameType).charAt(0).toUpperCase() +
+              String(bet.gameType).slice(1)} 
+              ${bet.selectedTimer}${bet.selectedTimer === "30sec" ? "ond" : "ute"}`
+          : "N/A"}
+      </span>
+    </div>
 
-                        {bet.gameType === "wingo" && (
+    <div className="card-row" style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+      <span className="label">Period:</span>
+      <span className="value">{bet.periodId}</span>
+    </div>
+
+    <div className="card-row" style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+      <span className="label">Order number</span>
+      <span className="value">{bet.orderId || "N/A"}</span>
+    </div>
+
+    <div className="card-row" style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+      <span className="label">Select</span>
+      <span className="value">
+        {typeof selectedItemFilter(bet) === "object"
+          ? Object.keys(selectedItemFilter(bet)).map((section) => (
+              <div key={section}>
+                {`${section}: ${selectedItemFilter(bet)[section]}`}
+              </div>
+            ))
+          : selectedItemFilter(bet)}
+      </span>
+    </div>
+
+    <div className="card-row" style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+      <span className="label">Total bet</span>
+      <span className="value">
+        ₹{bet.gameType === "5d" ? bet.totalBet : bet.betAmount}
+      </span>
+    </div>
+  </div>
+</div>
+
+<img 
+        src="https://diuwin.bet/assets/png/moonBar-f80ac733.png" 
+        alt="hr" 
+        style={{ width: "100%", height: "auto" }}
+    />
+
+<div style={{ display: "flex", alignItems: "center" }}>
+  {/* Timeline (left side) */}
+  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginRight: "10px" }}>
+    <div style={{
+  width: "10px",
+  height: "10px",
+  borderRadius: "50%",
+  border: "2px solid green",
+  backgroundColor: "rgb(8,203,128)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}}></div>
+    <div style={{
+  width: "1px",
+  height: "30px",  // Adjust height to match your layout
+  borderLeft: "2px dashed green"
+}}></div>
+    <div style={{
+  width: "10px",
+  height: "10px",
+  borderRadius: "50%",
+  border: "2px solid green",
+  backgroundColor: "rgb(8,203,128)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}}></div>
+  </div>
+
+  {/* Content (right side) */}
+  <div>
+    <div
+      className="lottery-results-heading"
+      style={{ textAlign: "left" ,marginBottom:"10px"}}
+    >
+      Lottery results
+    </div>
+    {bet.gameType === "wingo" && (
                           <div className="lottery-results">
                             <div
                               className={`result-item 
@@ -586,10 +662,11 @@ const BetHistoryMain = () => {
                             >
                               {bet.result >= 5 ? "Big" : "Small"}
                             </div>
+           
                           </div>
-                        )}
+  )}
 
-                        {bet.gameType === "k3" && (
+{bet.gameType === "k3" && (
                           <div className="lottery-results">
                             <span className="value">
                               {bet.diceOutcome && bet.diceOutcome.length > 0
@@ -606,8 +683,8 @@ const BetHistoryMain = () => {
                                 : "N/A"}
                             </span>
                           </div>
-                        )}
-                        {bet.gameType === "5d" && (
+  )}
+  {bet.gameType === "5d" && (
                           <div className="lottery-results">
                             <span className="value" style={{ display: "flex" }}>
                               {bet.resultOutcome &&
@@ -636,15 +713,23 @@ const BetHistoryMain = () => {
                             </span>
                           </div>
                         )}
-
-                        {bet.gameType === "trx" && (
+{bet.gameType === "trx" && (
                           <div className="lottery-results">
                             <span className="value">{bet.result}</span>
                           </div>
                         )}
+  </div>
+</div>
+
+                       
+                       
+                      
+                      
+
+                        
 
                         <div className="results-grid">
-                          <div className="grid-item">
+                          <div className="grid-item" style={{backgroundColor:"rgb(247,247,246)"}}>
                             <div className="value">
                               ₹
                               {bet.gameType === "5d"
@@ -655,7 +740,7 @@ const BetHistoryMain = () => {
                             </div>
                             <div className="label">Actual amount</div>
                           </div>
-                          <div className="grid-item">
+                          <div className="grid-item" style={{backgroundColor:"rgb(247,247,246)"}}>
                             <div className="value">
                               ₹
                               {bet.status === "Won"
@@ -667,7 +752,7 @@ const BetHistoryMain = () => {
                             </div>
                             <div className="label">Winnings</div>
                           </div>
-                          <div className="grid-item">
+                          <div className="grid-item" style={{backgroundColor:"rgb(247,247,246)"}}>
                             <div className="value">
                               ₹
                               {bet.gameType === "5d"
@@ -678,7 +763,7 @@ const BetHistoryMain = () => {
                             </div>
                             <div className="label">Handling fee</div>
                           </div>
-                          <div className="grid-item">
+                          <div className="grid-item" style={{backgroundColor:"rgb(247,247,246)"}}>
                             <div
                               className="value"
                               style={{

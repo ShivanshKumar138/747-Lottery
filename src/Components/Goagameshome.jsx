@@ -507,6 +507,7 @@ const handleTabClick = (index) => {
   const totalPages = Math.ceil(games.length / itemsPerPage);
 
   return (
+    
     <Box sx={{ position: 'relative' }}>
       <Box sx={{ 
         display: 'grid', 
@@ -599,7 +600,7 @@ const handleTabClick = (index) => {
 // ...existing code...
 
   return (
-    <Box sx={{ width: '100%', maxWidth: '4xl', margin: '0 auto' }}>
+    <Box sx={{ width: '100%', maxWidth: '4xl', margin: 'auto' }}>
       <Box sx={{ position: 'relative', px: 1 }}>
         <Box 
           sx={{
@@ -618,7 +619,7 @@ const handleTabClick = (index) => {
   spacing={2} 
   sx={{ 
     mt: 0,
-    maxWidth: '100%',
+    maxWidth: '150%',
     '& .MuiGrid-item': {
       display: 'flex',
       justifyContent: 'center'
@@ -640,7 +641,7 @@ const handleTabClick = (index) => {
           justifyContent: "center",
           textAlign: "center",
           borderRadius: 3,
-          p: 1,
+          p: 2,
           width: '100%',
           minHeight: {
             xs: '60px', 

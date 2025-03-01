@@ -2052,7 +2052,7 @@ const Head = ({ timerKey }) => {
                                   </Typography>
                                 </Grid>
                                 <Grid item xs={3} sx={{ textAlign: "right" }}>
-                                  <Box
+                                   {bet.status?<Box
                                     sx={{
                                       border: 1,
                                       borderColor:
@@ -2071,13 +2071,12 @@ const Head = ({ timerKey }) => {
                                     <Typography
                                       variant="caption"
                                       sx={{
-                                        color:
-                                          bet.winLoss > 0 ? "green" : "red",
+                                        color:bet.winLoss > 0 ? "green" : "red",
                                       }}
                                     >
                                       {bet.status}
                                     </Typography>
-                                  </Box>
+                                  </Box>:""}
                                   <Typography
                                     variant="body2"
                                     sx={{
@@ -2089,12 +2088,9 @@ const Head = ({ timerKey }) => {
                                     }}
                                   >
                                     {bet.status === "Failed"
-                                      ? `-₹${Math.abs(
-                                          parseFloat(bet.winLoss).toFixed(2)
-                                        )}`
-                                      : `+₹${parseFloat(bet.winLoss).toFixed(
+                                      ?  `+₹${parseFloat(bet.winLoss).toFixed(
                                           2
-                                        )}`}
+                                        )}`:""}
                                   </Typography>
                                 </Grid>
                               </Grid>

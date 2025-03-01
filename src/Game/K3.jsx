@@ -21,7 +21,7 @@ import {
   TableContainer,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { styled } from "@mui/system";
+import { margin, styled } from "@mui/system";
 import NoteIcon from "@mui/icons-material/Note";
 import { domain } from "../Components/config";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
@@ -753,40 +753,10 @@ const LotteryAppk = ({ timerKey }) => {
   }
   setOpenSnackbar(true);
   setDrawerOpen(false);
-}try {
-  const postResponse = await axios.post(`${domain}/K3betgame`, betData, {
-    withCredentials: true,
-    headers: {
-      Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-    },
-  });
-  console.log("Bet Placement Response:", postResponse.data);
-  
-  setBetPlaced(true);
-  setBetPeriodId(periodId);
-  handleCloseDrawer();
-  setError(null);
-  setOpenSnackbar(true);
+}
+try {
 } catch (error) {
-      console.error("Error placing bet:", error);
-      if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        console.error("Error data:", error.response.data);
-        console.error("Error status:", error.response.status);
-        console.error("Error headers:", error.response.headers);
-        setError(`Error placing bet: ${error.response.data.message || 'Unknown error occurred'}`);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.error("Error request:", error.request);
-        setError("No response received from server. Please try again.");
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.error("Error message:", error.message);
-        setError(`Error placing bet: ${error.message}`);
-      }
-      setOpenSnackbar(true);
-    setDrawerOpen(false);
+
 
     }
   };
@@ -1176,52 +1146,84 @@ const LotteryAppk = ({ timerKey }) => {
       >
         
         {images.map((image, index) => (
-          <Grid item key={index} mt={-3}>
-            <Box
-              position="relative"
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                height: 50,
-              }}
-              onClick={() => {
-                handleOpenDrawer(image.label);
-                handleEventSelection("Total");
-                setselectedItem("totalSum");
-              }}
-            >
-              <Box
-                component="img"
-                src={image.color === "green" ? greenImage : redImage}
-                alt={`Image ${index + 1}`}
-                width={55}
-                height={55}
-              />
-              <Box
-                sx={{
-                  position: "absolute",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  color: image.color,
-                  fontSize: "1.5rem",
-                  fontWeight: "bold",
-                }}
-              >
-                {image.label}
-              </Box>
-            </Box>
-            <Typography
-              variant="body2"
-              fontSize={13}
-              align="center"
-              color="#927992"
-            >
-              {image.factor}
-            </Typography>
-          </Grid>
-        ))}
+  <Grid 
+    item 
+    key={index} 
+    mt={-3}
+    sx={{
+      // Make grid items shrink proportionally
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      // Responsive sizing
+      width: { xs: '33%', sm: '25%', md: 'auto' },
+      maxWidth: { xs: 70, sm: 100, md: 120 },
+      px: { xs: 0.5, sm: 1, md: 2 }
+    }}
+  >
+    <Box
+      position="relative"
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: { xs: 40, sm: 50 },
+        width: '100%',
+        cursor: "pointer",
+        transform: 'scale(0.95)',
+        transition: 'transform 0.2s',
+        '&:hover': {
+          transform: 'scale(1.05)',
+        }
+      }}
+      onClick={() => {
+        handleOpenDrawer(image.label);
+        handleEventSelection("Total");
+        setselectedItem("totalSum");
+      }}
+    >
+      <Box
+        component="img"
+        src={image.color === "green" ? greenImage : redImage}
+        alt={`Image ${index + 1}`}
+        sx={{
+          width: { xs: 40, sm: 50, md: 55 },
+          height: { xs: 40, sm: 50, md: 55 },
+          objectFit: 'contain',
+        }}
+      />
+      <Box
+        sx={{
+          position: "absolute",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          color: image.color,
+          fontSize: { xs: '1.2rem', sm: '1.3rem', md: '1.5rem' },
+          fontWeight: "bold",
+        }}
+      >
+        {image.label}
+      </Box>
+    </Box>
+    <Typography
+      variant="body2"
+      sx={{
+        fontSize: { xs: 10, sm: 12, md: 13 },
+        textAlign: "center",
+        color: "#927992",
+        // Handle text overflow
+        width: '100%',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+      }}
+    >
+      {image.factor}
+    </Typography>
+  </Grid>
+))}
 
         <Grid
           container
@@ -1229,7 +1231,7 @@ const LotteryAppk = ({ timerKey }) => {
           mt={1}
           justifyContent="center"
           alignItems="center"
-          spacing={0} // Ensure no additional spacing from Grid container
+          spacing={3} // Ensure no additional spacing from Grid container
         >
           {[
             {
@@ -1264,7 +1266,7 @@ const LotteryAppk = ({ timerKey }) => {
             <Grid
               key={index}
               item
-              xs={3}
+              xs={2}
               sm={3}
               md={3}
               lg={3}
@@ -1282,18 +1284,28 @@ const LotteryAppk = ({ timerKey }) => {
                 backgroundColor: item.bgColor,
                 color: "white",
                 borderRadius: 4,
-                width: 100,
-                maxWidth: 80,
                 overflow: "hidden", // Prevents content from overflowing
                 margin: "3px", // Consistent margin around each item
-              }}
-            >
-              <Typography variant="body1" fontSize={10}>
+                padding: "20px" // This applies directly on the grid item if needed
+            }}
+            >    <Box
+            style={{
+                padding: "50px", 
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                margin:"30px"
+            }}
+        >
+                 <Typography variant="body1" fontSize={15}>
                 {item.label}
               </Typography>
               <Typography variant="body2" style={{ marginTop: 0.5 }}>
                 {item.multiplier}
               </Typography>
+              </Box>
+             
             </Grid>
           ))}
         </Grid>
@@ -3041,7 +3053,7 @@ const LotteryAppk = ({ timerKey }) => {
                                   </Box>
                                 </Box>
                                 <Box sx={{ textAlign: "right" }}>
-                                  <Box
+                                  {bet.status?<Box
                                     sx={{
                                       border: 1,
                                       borderColor:
@@ -3072,7 +3084,7 @@ const LotteryAppk = ({ timerKey }) => {
                                     >
                                       {bet.status}
                                     </Typography>
-                                  </Box>
+                                  </Box>:""}
                                   {bet.status !== "Pending" && (
                                     <Typography
                                       variant="body2"
@@ -3084,9 +3096,11 @@ const LotteryAppk = ({ timerKey }) => {
                                         fontWeight: "bold",
                                       }}
                                     >
-                                      {bet.winLoss >= 0
-                                        ? `+₹${bet.winLoss}`
-                                        : `-₹${Math.abs(bet.winLoss)}`}
+                                     {bet.winLoss > 0
+    ? `+₹${bet.winLoss}`
+    : bet.winLoss < 0
+        ? `-₹${Math.abs(bet.winLoss)}`
+        : ``}
                                     </Typography>
                                   )}
                                 </Box>

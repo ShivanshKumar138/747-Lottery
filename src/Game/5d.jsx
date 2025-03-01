@@ -593,7 +593,6 @@ const LotteryApp = () => {
   return (
     <div>
       <Mobile>
-
         <Grid
           container
           alignItems="center"

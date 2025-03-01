@@ -372,176 +372,245 @@ const InvitationBonusComponent = () => {
             </Typography>
           </Box>
         </Box>
-
         <Box sx={{ px: 2, boxShadow: "none" }}>
-          {eligibilityData.bonusDetails.map((bonus, index) => {
-            const bonusStatus = getBonusStatus(bonus);
-            return (
-              <Box key={index}>
-                {/* Bonus and Close Button */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
+    {eligibilityData.bonusDetails.map((bonus, index) => {
+        const bonusStatus = getBonusStatus(bonus);
+
+        return (
+            <Box
+                key={index}
+                sx={{
+                    height:260,
+                    bgcolor: "white",
+                    color: "#333",
+                    borderRadius: "12px",
+                    overflow: "hidden",
                     mb: 2,
-                    boxShadow: "none"
-                  }}
+                    position: "relative",
+                    "&::before, &::after": {
+                        content: '""',
+                        position: "absolute",
+                        top: "50%",
+                        width: "20px",
+                        height: "20px",
+                        backgroundColor: "#f0f0f0",
+                        borderRadius: "50%",
+                        transform: "translateY(-50%)",
+                        zIndex: 2,
+                    },
+                    "&::before": {
+                        left: "-8px",
+                    },
+                    "&::after": {
+                        right: "-8px",
+                    },
+                }}
+            >
+                {/* Header Section */}
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        backgroundColor: "white",
+                        padding: "1px 12px",
+                    }}
                 >
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <Button
-                      variant="contained"
-                      size="small"
-                      sx={{
-                        bgcolor: "rgb(255,142,41)",
-                        color: "white",
-                        mr: 1,
-                        textTransform: "none",
-                        borderRadius: "6px",
-                        padding: "6px 12px",
-                        fontSize: "14px",
-                        "&:hover": { bgcolor: "#0b4f12" },
-                        boxShadow: "none"
-                      }}
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <Box
+    sx={{
+        display: "flex",
+        alignItems: "center",
+        backgroundColor: "#20a65c",
+        padding: "1px 12px",
+        borderRadius: "20px  0 20px 0", // Left side rounded, right side flat (like your image)
+        height: "40px"
+    }}
+>
+    {/* Bonus Text */}
+    <Typography
+        sx={{
+            color: "white",
+            fontWeight: "bold",
+            fontSize: "14px",
+        }}
+    >
+        Bonus
+    </Typography>
+
+    {/* Number Circle */}
+    <Box
+        sx={{
+            width: "20px",
+            height: "20px",
+            borderRadius: "50%",
+            backgroundColor: "white",
+            color: "#555",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "12px",
+            fontWeight: "bold",
+            marginLeft: "6px", // Space between Bonus and number
+        }}
+    >
+        {bonus.displayLevel} {/* <- Use your actual value here */}
+    </Box>
+
+    {/* Close Icon Circle */}
+    <IconButton
+        size="small"
+        sx={{
+            width: "20px",
+            height: "20px",
+            borderRadius: "50%",
+            backgroundColor: "white",
+            marginLeft: "6px", // Space between number and X
+            padding: "0",
+            border: "1px solid #ddd", // subtle border like the image
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            "&:hover": {
+                backgroundColor: "#f5f5f5"
+            }
+        }}
+    >
+        <CloseIcon sx={{ fontSize: "14px", color: "#888" }} />
+    </IconButton>
+</Box>
+
+                        <StyledIconButton size="small" sx={{ color: "white" }}>
+                            <CloseIcon fontSize="small" />
+                        </StyledIconButton>
+                    </Box>
+                    <Typography
+                        variant="h4"
+                        fontWeight="bold"
+                        sx={{ fontSize: "16px", color: "#f90" }}
                     >
-                      Bonus {bonus.displayLevel}
-                    </Button>
-                    <StyledIconButton size="small">
-                      <CloseIcon fontSize="small" />
-                    </StyledIconButton>
-                  </Box>
-                  <Typography
-                    variant="h6"
-                    color="rgb(255,142,41)"
-                    fontWeight="bold"
-                    sx={{ fontSize: "16px" }}
-                  >
-                    ₹{bonus.bonusAmount.toFixed(2)}
-                  </Typography>
+                        ₹{bonus.bonusAmount.toFixed(2)}
+                    </Typography>
                 </Box>
 
-                {/* Invitees and Recharge Info */}
-                <Paper
-                  elevation={1}
-                  sx={{
-                    bgcolor: "#ffffff",
-                    p: 2,
-                    borderRadius: "8px",
-                    mb: 2,
-                    color: "#333",
-                    border: "1px solid #e0e0e0",
-                    boxShadow: "none"
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      mb: 1,
-                      boxShadow: "none"
-                    }}
-                  >
-                    <Typography variant="body2" color="#666">
-                      Number of invitees
-                    </Typography>
-                    <Typography variant="body1" fontWeight="bold" color="#333">
-                      {bonus.level}
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{ display: "flex", justifyContent: "space-between" }}
-                  >
-                    <Typography variant="body2" color="#666">
-                      Recharge per person
-                    </Typography>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="rgb(255,142,41)"
+                {/* Invitees and Recharge Section */}
+                <Box sx={{ backgroundColor: "#f8f8f8", padding: "12px" }}>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            backgroundColor: "rgba(125, 120, 120, 0.12)",
+                            borderRadius: "8px",
+                            padding: "2px 4px",
+                            mb: 1,
+                            boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                        }}
                     >
-                      ₹{bonus.minDepositAmount.toFixed(2)}
-                    </Typography>
-                  </Box>
-                </Paper>
+                        <Typography variant="body2">Number of invitees</Typography>
+                        <Typography variant="body1" fontWeight="bold">
+                            {bonus.level}
+                        </Typography>
+                    </Box>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            backgroundColor: "rgba(125, 120, 120, 0.12)",
+                            borderRadius: "8px",
+                            padding: "2px 4px",
+                            boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                        }}
+                    >
+                        <Typography variant="body2">Recharge per people</Typography>
+                        <Typography
+                            variant="body1"
+                            fontWeight="bold"
+                            sx={{ color: "#ff5050" }}
+                        >
+                            ₹{bonus.minDepositAmount.toFixed(2)}
+                        </Typography>
+                    </Box>
+                </Box>
 
-                {/* Progress Details */}
-                <Paper
-                  sx={{
-                    bgcolor: "#f5f5f5",
-                    color: "#333",
-                    p: 2,
-                    mb: 2,
-                    borderRadius: "8px",
-                    border: "1px solid #e0e0e0",
-                    boxShadow: "none"
-                  }}
-                >
-                  <Box
+                {/* Progress Section */}
+                <Box
                     sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      mb: 1,
+                        backgroundColor: "white",
+                        padding: "12px",
+                        borderTop: "2px dashed #ddd",
+                        display: "flex",
+                        justifyContent: "space-evenly",
+                        textAlign: "center",
                     }}
-                  >
-                    <Typography variant="body1" sx={{ color: "rgb(255,142,41)" }}>
-                      {bonus.progress.referrals.total} /{" "}
-                      {bonus.progress.referrals.required}
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: "rgb(255,142,41)" }}>
-                      {bonus.progress.referrals.qualifying} /{" "}
-                      {bonus.progress.referrals.required}
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{ display: "flex", justifyContent: "space-between" }}
-                  >
-                    <Typography variant="caption" color="#666">
-                      Number of invitees
-                    </Typography>
-                    <Typography variant="caption" color="#666">
-                      Deposit number
-                    </Typography>
-                  </Box>
-                </Paper>
-                {/* Updated Claim/Unfinished Button */}
+                >
+                    <Box>
+                        <Typography
+                            variant="body1"
+                            fontWeight="bold"
+                            sx={{ color: "#ffa500" }}
+                        >
+                            {bonus.progress.referrals.total} / {bonus.progress.referrals.required}
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: "#999" }}>
+                            Number of invitees
+                        </Typography>
+                    </Box>
+                    <Box>
+                        <Typography
+                            variant="body1"
+                            fontWeight="bold"
+                            sx={{ color: "#ff5050" }}
+                        >
+                            {bonus.progress.referrals.qualifying} / {bonus.progress.referrals.required}
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: "#999" }}>
+                            Deposit number
+                        </Typography>
+                    </Box>
+                </Box>
+                {/* Unfinished/Claim Button */}
                 <Button
-                  fullWidth
-                  variant="contained"
-                  onClick={() => handleClaimBonus(bonus.displayLevel)}
-                  disabled={bonusStatus.disabled}
-                  sx={{
-                    bgcolor: bonusStatus.color,
-                    color: bonusStatus.disabled ? "#666" : "white",
-                    "&:hover": {
-                      bgcolor: bonusStatus.disabled ? "#d5d5d5" : "#0b4f12",
-                    },
-                    textTransform: "none",
-                    borderRadius: "20px",
-                    boxShadow: "none",
-                    fontSize: "14px",
-                    marginBottom: 4,
-                  }}
+                    fullWidth
+                    variant="contained"
+                    onClick={() => handleClaimBonus(bonus.displayLevel)}
+                    disabled={bonusStatus.disabled}
+                    sx={{
+                        bgcolor: "#d5d5d5",
+                        color: "#666",
+                        textTransform: "none",
+                        borderRadius: "40px",
+                        fontSize: "15px",
+                        fontWeight: "bold",
+                        "&:hover": { bgcolor: "#e0e0e0" },
+                        padding: "10px 0",
+                        cursor: bonusStatus.disabled ? "not-allowed" : "pointer",
+                        width:300,
+                    }}
                 >
-                  {bonusStatus.text}
+                    {bonusStatus.text}
                 </Button>
+
+                {/* Snackbar Notification */}
                 <Snackbar
-                  open={snackbar.open}
-                  autoHideDuration={6000}
-                  onClose={handleCloseSnackbar}
-                  anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                >
-                  <Alert
+                    open={snackbar.open}
+                    autoHideDuration={6000}
                     onClose={handleCloseSnackbar}
-                    severity={snackbar.severity}
-                    sx={{ width: "100%" }}
-                  >
-                    {snackbar.message}
-                  </Alert>
+                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                >
+                    <Alert
+                        onClose={handleCloseSnackbar}
+                        severity={snackbar.severity}
+                        sx={{ width: "100%" }}
+                    >
+                        {snackbar.message}
+                    </Alert>
                 </Snackbar>
-              </Box>
-            );
-          })}
-        </Box>
+            </Box>
+        );
+    })}
+</Box>
+
+
       </Box>
     </Mobile>
   );

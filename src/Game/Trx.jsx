@@ -146,7 +146,7 @@ const LotteryAppt = ({ timerKey }) => {
   const [remainingTime, setRemainingTime] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState("");
-  const [betAmount, setBetAmount] = useState(0);
+  const [betAmount, setBetAmount] = useState(1);
   const [multiplier, setMultiplier] = useState(1);
   const [totalBet, setTotalBet] = useState(0);
   const [betPlaced, setBetPlaced] = useState(false);
@@ -305,6 +305,7 @@ const LotteryAppt = ({ timerKey }) => {
         });
   
         if (response.data) {
+          console.log(response.data);
           setRows(response.data); // Directly set the filtered data received from the backend
         } else {
           console.error("Response data does not contain Result");
@@ -451,7 +452,7 @@ const LotteryAppt = ({ timerKey }) => {
     const totalBet = betAmount * multiplier;
     handleRefresh();
     // Check if user's wallet balance is less than the total bet amount
-    if (betAmount === 1) {
+    if (betAmount === 0) {
       alert("You can't place a bet with 0 amount.");
       return;
     }
@@ -525,6 +526,7 @@ const LotteryAppt = ({ timerKey }) => {
 
   useEffect(() => {
     if (remainingTime >= "00:01" && remainingTime <= "00:05") {
+      setDrawerOpen(false)
       setOpenDialog(true);
       if (isSoundOn && remainingTime !== lastPlayedTime) {
         countdownSound.play();
@@ -697,8 +699,8 @@ const LotteryAppt = ({ timerKey }) => {
         setOpen(false);
         setTimeout(() => {
           setCurrentBetIndex((prevIndex) => prevIndex + 1); // Increment to show the next popup
-        }, 1000); // Delay before showing the next popup
-      }, 2500); // Popup display duration
+        }, 3000); // Delay before showing the next popup
+      }, 4000); // Popup display duration
 
       // Cleanup to avoid memory leaks
       return () => clearTimeout(timer);
@@ -1989,39 +1991,31 @@ const LotteryAppt = ({ timerKey }) => {
                                   </Typography>
                                 </Grid>
                                 <Grid item xs={3} sx={{ textAlign: "right" }}>
-                                  <Box
-                                    sx={{
-                                      border: 1,
-                                      borderColor:
-                                        bet.status.toLowerCase() === "lost"
-                                          ? "error.main" // Red for lost
-                                          : bet.status.toLowerCase() === "win"
-                                          ? "success.main" // Green for win
-                                          : "#2196f3", // Blue for pending or other statuses
-                                      borderRadius: 1,
-                                      pt: 0.1,
-                                      pb: 0.1,
-                                      pl: 1,
-                                      pr: 1,
-                                      display: "inline-block",
-                                      mb: 0.5,
-                                    }}
-                                  >
-                                    <Typography
-                                      variant="caption"
-                                      sx={{
-                                        color:
-                                          bet.status.toLowerCase() === "lost"
-                                            ? "#f44336" // Red for lost
-                                            : bet.status.toLowerCase() === "win"
-                                            ? "#4caf50" // Green for win
-                                            : "#2196f3", // Blue for pending
-                                        fontWeight: "bold",
-                                      }}
-                                    >
-                                      {bet.status.toUpperCase()}
-                                    </Typography>
-                                  </Box>
+                               {bet.status !=="pending"?<Box
+                                                                   sx={{
+                                                                     border: 1,
+                                                                     borderColor:
+                                                                       bet.status === "Failed"
+                                                                         ? "error.main"
+                                                                         : "success.main",
+                                                                     borderRadius: 1,
+                                                                     pt: 0.1,
+                                                                     pb: 0.1,
+                                                                     pl: 1,
+                                                                     pr: 1,
+                                                                     display: "inline-block",
+                                                                     mb: 0.5,
+                                                                   }}
+                                                                 >
+                                                                   <Typography
+                                                                     variant="caption"
+                                                                     sx={{
+                                                                       color:bet.winLoss > 0 ? "green" : "red",
+                                                                     }}
+                                                                   >
+                                                                     {bet.status}
+                                                                   </Typography>
+                                                                 </Box>:""}
                                   <Typography
                                     variant="body2"
                                     sx={{
@@ -2030,9 +2024,12 @@ const LotteryAppt = ({ timerKey }) => {
                                       fontWeight: "bold",
                                     }}
                                   >
-                                    {bet.winLoss < 0
-                                      ? `-₹${Math.abs(bet.winLoss)}`
-                                      : `+₹${bet.winLoss}`}{" "}
+                               {bet.winLoss < 0
+    ? `-₹${Math.abs(bet.winLoss)}`
+    : bet.winLoss >=0
+        ? `+₹${Math.abs(bet.winLoss)}`
+        : ``
+}{" "}
                                   </Typography>
                                 </Grid>
                               </Grid>
@@ -2283,7 +2280,7 @@ const LotteryAppt = ({ timerKey }) => {
       minWidth: "20px",
     }}
   >
-    Red
+    {rows[0]?.colorOutcome[0]}
   </div>
 
   {/* Number Circle */}
@@ -2300,7 +2297,7 @@ const LotteryAppt = ({ timerKey }) => {
       minWidth: "5px",
     }}
   >
-    8
+    {rows[0]?.numberOutcome}
   </div>
 
   {/* "Big" Tag */}
@@ -2317,7 +2314,7 @@ const LotteryAppt = ({ timerKey }) => {
       minWidth: "20px",
     }}
   >
-    Big
+    {rows[0]?.sizeOutcome}
   </div>
 </div>
 </div>

@@ -759,7 +759,7 @@ const SwipeableCards = () => {
 
       {/* My benefits */}
 
-      <div className="my-benefits">
+      {/* <div className="my-benefits">
         <h2 className="my-benefits__title">
           <span className="my-benefits__crown">👑</span> My benefits
         </h2>
@@ -798,7 +798,7 @@ const SwipeableCards = () => {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* <MyBenefits /> */}
 
@@ -854,7 +854,7 @@ const SwipeableCards = () => {
               ) : (
                 <p>No VIP history available.</p>
               )}
-              <button className="view-all-btn">View All</button>
+              <button className="mybtn! view-all-btn">View All</button>
             </div>
           )}
           {activeTab === "rules" && (

@@ -72,3 +72,21 @@ button {
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
 }
+
+
+.mybtn{
+  background: orange;
+  background-image: -webkit-linear-gradient(top, orange, orange);
+  background-image: -moz-linear-gradient(top, orange, orange);
+  background-image: -ms-linear-gradient(top, orange, orange);
+  background-image: -o-linear-gradient(top, orange, orange);
+  background-image: linear-gradient(to bottom, orange, orange);
+  -webkit-border-radius: 28;
+  -moz-border-radius: 28;
+  border-radius: 28px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 29px;
+  padding: 10px 40px 10px 40px;
+  text-decoration: none;
+}

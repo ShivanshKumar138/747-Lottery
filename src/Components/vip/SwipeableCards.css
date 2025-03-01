@@ -470,7 +470,7 @@ background: linear-gradient(90deg, #4782ff 0%, #59adff 100%);
   width: 100%;
   border: none;
   border-radius: 10px;
-  background: linear-gradient(180deg, #55A4FF 0%, #55A4FF 30%, #55A4FF 100%);
+  background: orange;
   color: white;
   cursor: pointer;
 }
