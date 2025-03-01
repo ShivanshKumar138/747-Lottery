@@ -102,7 +102,20 @@ const WalletMain = ({ children }) => {
 
     fetchWithdrawAmount();
   }, []);
-
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
+  
+  // Example function that would trigger the transfer process
+  const handleTransferSnackBar = () => {
+    // Your transfer logic here
+    
+    // Show success notification
+    setOpen(true);
+  };
 
   useEffect(() => {
     const fetchThirdPartyWalletBalance = async () => {
@@ -172,7 +185,20 @@ const WalletMain = ({ children }) => {
         console.log("response", response);
         if (response.data.status === "SC_OK") {
           setThirdPartyWalletBalance(0); // Set third-party wallet balance to 0
-          alert("Transfer successful");
+          <Snackbar
+          open={open}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        >
+          <Alert 
+            onClose={handleClose} 
+            severity="success" 
+            sx={{ width: '100%' }}
+          >
+            Transfer successful
+          </Alert>
+        </Snackbar>
         } else {
           console.error(response.data.message);
         }
@@ -196,7 +222,20 @@ const WalletMain = ({ children }) => {
         );
         if (response.data.success == 1) {
           setJiliRealMemberStatus(0); // Set JiliReal member status to 0
-          alert("Transfer successful");
+          <Snackbar
+          open={open}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        >
+          <Alert 
+            onClose={handleClose} 
+            severity="success" 
+            sx={{ width: '100%' }}
+          >
+            Transfer successful
+          </Alert>
+        </Snackbar>
         } else {
           console.error(response.data.message);
         }

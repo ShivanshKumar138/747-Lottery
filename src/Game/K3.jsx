@@ -4,7 +4,7 @@ import Mobile from "../Components/Mobile";
 import CloseIcon from "@mui/icons-material/Close";
 import RemoveIcon from "@mui/icons-material/IndeterminateCheckBox";
 import AddIcon from "@mui/icons-material/AddBox";
-import { FormControlLabel, Radio } from "@mui/material";
+import { Checkbox, FormControlLabel, Radio } from "@mui/material";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import {
   Typography,
@@ -481,7 +481,7 @@ const LotteryAppk = ({ timerKey }) => {
   const [currentBetIndex, setCurrentBetIndex] = useState(0);
   // const [showOverlay, setShowOverlay] = useState(false);
   // const [overlayContent, setOverlayContent] = useState("");
-
+const [isChecked, setIsChecked] = useState(false);
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
@@ -1034,15 +1034,15 @@ try {
           `Displaying popup for bet: ${currentBet.periodId}, Status: ${currentBet.status}`
         );
 
-        const timer = setTimeout(() => {
-          setOpen(false);
-          console.log("Closing popup and moving to next");
-          setTimeout(() => {
-            setCurrentBetIndex((prevIndex) => prevIndex + 1);
-          }, 2000);
-        }, 4500);
+        // const timer = setTimeout(() => {
+        //   setOpen(false);
+        //   console.log("Closing popup and moving to next");
+        //   setTimeout(() => {
+        //     setCurrentBetIndex((prevIndex) => prevIndex + 1);
+        //   }, 2000);
+        // }, 4500);
 
-        return () => clearTimeout(timer);
+        // return () => clearTimeout(timer);
       } else {
         // console.log(`Skipping bet with status: ${currentBet.status}`);
         setCurrentBetIndex((prevIndex) => prevIndex + 1);
@@ -1057,7 +1057,25 @@ try {
   }, [popupQueue, currentBetIndex]);
 
   const seconds1 = remainingTime ? remainingTime.split(":")[1] : "00";
-
+  const handleCheckboxChange = (event) => {
+    const newCheckedState = event.target.checked;
+    setIsChecked(newCheckedState);
+    
+    // Trigger your function here based on checkbox state
+    if (newCheckedState) {
+      console.log('Auto-close enabled');
+            const timer = setTimeout(() => {
+        setOpen(false);
+        setTimeout(() => {
+          setCurrentBetIndex((prevIndex) => prevIndex + 1);
+        }, 2000);
+      }, 4000);
+      // Your function logic here
+    } else {
+      console.log('Auto-close disabled');
+      // Your alternative function logic here
+    }
+  };
   // Determine the length of the seconds string
   const length = seconds1.length;
 
@@ -3053,7 +3071,7 @@ try {
                                   </Box>
                                 </Box>
                                 <Box sx={{ textAlign: "right" }}>
-                                  {bet.status?<Box
+                                  <Box
                                     sx={{
                                       border: 1,
                                       borderColor:
@@ -3082,9 +3100,9 @@ try {
                                             : "red",
                                       }}
                                     >
-                                      {bet.status}
+                                      {bet.status==="Failed"||bet.status==="Succeed"?bet.status:"Pending"}
                                     </Typography>
-                                  </Box>:""}
+                                  </Box>
                                   {bet.status !== "Pending" && (
                                     <Typography
                                       variant="body2"
@@ -3096,11 +3114,10 @@ try {
                                         fontWeight: "bold",
                                       }}
                                     >
-                                     {bet.winLoss > 0
-    ? `+₹${bet.winLoss}`
-    : bet.winLoss < 0
-        ? `-₹${Math.abs(bet.winLoss)}`
-        : ``}
+                                   {bet.status === "Failed"
+                                      ? `-₹${Math.abs(bet.winLoss)}`
+                                      : bet.status === "Succeed"
+                                      ? `+₹${bet.winLoss}`:""}
                                     </Typography>
                                   )}
                                 </Box>
@@ -3586,12 +3603,17 @@ try {
             fontSize: "16px",
           }}
         >
-          <CheckCircleIcon
-            style={{
-              color: "#fff", // White Check Icon
-              fontSize: "10px",
-            }}
-          />
+         <Checkbox
+                 checked={isChecked}
+                 onChange={handleCheckboxChange}
+                 size="small"
+                 sx={{
+                   color: "#fff",
+                   '&.Mui-checked': {
+                     color: "#fff",
+                   },
+                 }}
+               />
           <Typography
             variant="body2"
             style={{

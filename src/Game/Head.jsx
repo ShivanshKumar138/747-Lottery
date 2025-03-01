@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import IconButton from "@mui/material/IconButton";
 import Mobile from "../Components/Mobile";
-import { Typography, Grid, Box, TextField} from "@mui/material";
+import { Typography, Grid, Box, TextField, Checkbox} from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
@@ -283,7 +283,7 @@ const Head = ({ timerKey }) => {
     let currentBet; 
   const text=gameResult==="Succeed"?"Congratulations":"Sorry"
   const navigate = useNavigate();
-
+const [isChecked, setIsChecked] = useState(false);
   const handleClose=()=>{
     setOpen(false);
   }
@@ -831,14 +831,14 @@ const Head = ({ timerKey }) => {
 
       announceBetResult();
 
-      const timer = setTimeout(() => {
-        setOpen(false);
-        setTimeout(() => {
-          setCurrentBetIndex((prevIndex) => prevIndex + 1);
-        }, 100000);
-      }, 4000);
+      // const timer = setTimeout(() => {
+      //   setOpen(false);
+      //   setTimeout(() => {
+      //     setCurrentBetIndex((prevIndex) => prevIndex + 1);
+      //   }, 100000);
+      // }, 4000);
 
-      return () => clearTimeout(timer);
+      // return () => clearTimeout(timer);
     } else {
       console.log(
         "No popup to show, either popupQueue is empty or currentBetIndex exceeds queue length."
@@ -847,7 +847,26 @@ const Head = ({ timerKey }) => {
   }, [popupQueue, currentBetIndex]);
 
   const seconds1 = remainingTime ? remainingTime.split(":")[1] : "00";
-
+  const handleCheckboxChange = (event) => {
+    const newCheckedState = event.target.checked;
+    setIsChecked(newCheckedState);
+    
+    // Trigger your function here based on checkbox state
+    if (newCheckedState) {
+      console.log('Auto-close enabled');
+            const timer = setTimeout(() => {
+        setOpen(false);
+        setTimeout(() => {
+          setCurrentBetIndex((prevIndex) => prevIndex + 1);
+          setIsChecked(false)
+        }, 2000);
+      }, 4000);
+      // Your function logic here
+    } else {
+      console.log('Auto-close disabled');
+      // Your alternative function logic here
+    }
+  };
   // Determine the length of the seconds string
   const length = seconds1.length;
 
@@ -2052,31 +2071,38 @@ const Head = ({ timerKey }) => {
                                   </Typography>
                                 </Grid>
                                 <Grid item xs={3} sx={{ textAlign: "right" }}>
-                                   {bet.status?<Box
-                                    sx={{
-                                      border: 1,
-                                      borderColor:
-                                        bet.status === "Failed"
+                                    <Box
+                                         sx={{
+                                          border: 1,
+                                          borderColor:
+                                          bet.status === "Failed"
                                           ? "error.main"
-                                          : "success.main",
-                                      borderRadius: 1,
-                                      pt: 0.1,
-                                      pb: 0.1,
-                                      pl: 1,
-                                      pr: 1,
-                                      display: "inline-block",
-                                      mb: 0.5,
-                                    }}
-                                  >
-                                    <Typography
-                                      variant="caption"
-                                      sx={{
-                                        color:bet.winLoss > 0 ? "green" : "red",
+                                          : bet.status === "Suceed"
+                                          ? "success.main"
+                                          : "text.primary",
+                                         borderRadius: 1,
+                                        pt: 0.1,
+                                        pb: 0.1,
+                                        pl: 1,
+                                        pr: 1,
+                                        display: "inline-block",
+                                        mb: 0.5,
                                       }}
-                                    >
-                                      {bet.status}
-                                    </Typography>
-                                  </Box>:""}
+                                     >
+                                        <Typography
+                                            variant="caption"
+                                            sx={{
+                                            color:
+                                            bet.status === "Failed"
+                                             ? "orange" // Color for Pending status
+                                            : bet.winLoss >= 0
+                                            ? "green"
+                                            : "red",
+                                          }}
+                                        >
+                                            {bet.status==="Failed"||bet.status==="Succeed"?bet.status:"Pending"}
+                                        </Typography>
+                                      </Box>
                                   <Typography
                                     variant="body2"
                                     sx={{
@@ -2088,9 +2114,11 @@ const Head = ({ timerKey }) => {
                                     }}
                                   >
                                     {bet.status === "Failed"
-                                      ?  `+₹${parseFloat(bet.winLoss).toFixed(
-                                          2
-                                        )}`:""}
+    ? `-₹${Math.abs(bet.winLoss)}`
+    : bet.status === "Succeed"
+        ? `+₹${Math.abs(bet.winLoss)}`
+        : ``
+}
                                   </Typography>
                                 </Grid>
                               </Grid>
@@ -2099,6 +2127,10 @@ const Head = ({ timerKey }) => {
                               <Table size="small" style={{ padding: 2 }}>
                                 <TableBody>
                                   {[
+                                  {
+                                    label: "Order number",
+                                    value: "",
+                                  },
                                     { label: "Period", value: bet.periodId },
                                     {
                                       label: "Purchase amount",
@@ -2432,12 +2464,17 @@ const Head = ({ timerKey }) => {
             fontSize: "16px",
           }}
         >
-          <CheckCircleIcon
-            style={{
-              color: "#fff", // White Check Icon
-              fontSize: "10px",
-            }}
-          />
+                  <Checkbox
+                                     checked={isChecked}
+                                     onChange={handleCheckboxChange}
+                                     size="small"
+                                     sx={{
+                                       color: "#fff",
+                                       '&.Mui-checked': {
+                                         color: "#fff",
+                                       },
+                                     }}
+                                   />
           <Typography
             variant="body2"
             style={{

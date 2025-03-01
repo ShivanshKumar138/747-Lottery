@@ -4,7 +4,7 @@ import Mobile from "../Components/Mobile";
 import CloseIcon from "@mui/icons-material/Close";
 import RemoveIcon from "@mui/icons-material/IndeterminateCheckBox";
 import AddIcon from "@mui/icons-material/AddBox";
-import { FormControlLabel, Radio } from "@mui/material";
+import { FormControlLabel, Radio,Checkbox  } from "@mui/material";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import { CheckCircleIcon } from "lucide-react";
 import {
@@ -223,7 +223,8 @@ const FiveD = ({ timerKey }) => {
   const [activeTopCategory, setActiveTopCategory] = useState("A");
   const [drawerSelectedIndex, setDrawerSelectedIndex] = useState(null); // To track the selected index inside the drawer
   const [selectedElement, setSelectedElement] = useState(null);
-  const [accountType,setAccountType] = useState('Normal')
+  const [accountType,setAccountType] = useState('Normal');
+  const [isChecked, setIsChecked] = useState(false);
 
   const calculateTotalBet = () =>
     betAmount *
@@ -999,19 +1000,21 @@ const FiveD = ({ timerKey }) => {
           currentBet.status === "Won" ? "Bonus" : "You lost the bet"
         );
 
+       
+
         setOpen(true);
       };
 
       announceBetResult();
 
-      const timer = setTimeout(() => {
-        setOpen(false);
-        setTimeout(() => {
-          setCurrentBetIndex((prevIndex) => prevIndex + 1);
-        }, 2000);
-      }, 4000);
+      // const timer = setTimeout(() => {
+      //   setOpen(false);
+      //   setTimeout(() => {
+      //     setCurrentBetIndex((prevIndex) => prevIndex + 1);
+      //   }, 2000);
+      // }, 4000);
 
-      return () => clearTimeout(timer);
+      // return () => clearTimeout(timer);
     } else {
       console.log(
         "No popup to show, either popupQueue is empty or currentBetIndex exceeds queue length."
@@ -1019,9 +1022,30 @@ const FiveD = ({ timerKey }) => {
     }
   }, [popupQueue, currentBetIndex]);
   const seconds1 = remainingTime ? remainingTime.split(":")[1] : "00";
-
+  console.log("Game Result is:",gameResult);
   // Determine the length of the seconds string
   const length = seconds1.length;
+
+  const handleCheckboxChange = (event) => {
+    const newCheckedState = event.target.checked;
+    setIsChecked(newCheckedState);
+    
+    // Trigger your function here based on checkbox state
+    if (newCheckedState) {
+      console.log('Auto-close enabled');
+      setIsChecked(false);
+            const timer = setTimeout(() => {
+        setOpen(false);
+        setTimeout(() => {
+          setCurrentBetIndex((prevIndex) => prevIndex + 1);
+        }, 2000);
+      }, 4000);
+      // Your function logic here
+    } else {
+      console.log('Auto-close disabled');
+      // Your alternative function logic here
+    }
+  };
 
   // Split the seconds into two halves
   const firstHalf = seconds1.slice(0, Math.ceil(length / 2));
@@ -2475,7 +2499,7 @@ const FiveD = ({ timerKey }) => {
                                   </Typography>
                                 </Grid>
                                 <Grid item xs={3} sx={{ textAlign: "right" }}>
-                                  {bet.status !=="Pending"?<Box
+                                  <Box
                                     sx={{
                                       border: 1,
                                       borderColor:
@@ -2506,7 +2530,7 @@ const FiveD = ({ timerKey }) => {
                                     >
                                       {bet.status}
                                     </Typography>
-                                  </Box>:""}
+                                  </Box>
                                   <Typography
                                     variant="body2"
                                     sx={{
@@ -2532,6 +2556,7 @@ const FiveD = ({ timerKey }) => {
                               <Table size="small" style={{ padding: 2 }}>
                                 <TableBody>
                                   {[
+                                  
                                     {
                                       label: "Order number",
                                       value: bet.orderId,
@@ -2756,7 +2781,7 @@ const FiveD = ({ timerKey }) => {
       width: "75%",
       height: "55%",
       backgroundImage: `url(${
-        gameResult === "Succeed"
+        gameResult === "Won"
           ? "../../assets/images/missningBg-6f17b242.png"
           : "../../assets/images/missningLBg-73e02111.png"
       })`,
@@ -2777,14 +2802,14 @@ const FiveD = ({ timerKey }) => {
     <Typography
       variant="h5"
       style={{
-        color: gameResult==="Succeed"? "red":"rgb(104,136,176)",
+        color: gameResult==="Won"? "Won":"rgb(104,136,176)",
         fontWeight: "bold",
         textAlign: "center",
         marginTop: "0",
         marginBottom:"12px"
       }}
     >
-      {gameResult === "Succeed" ? "Congratulations" : "Sorry"}
+      {gameResult === "Won" ? "Congratulations" : "Sorry"}
     </Typography>
 
     {/* Lottery Results Section */}
@@ -2892,11 +2917,11 @@ const FiveD = ({ timerKey }) => {
     <Typography
       variant="h5"
       style={{
-        color: gameResult === "Succeed" ? "#28a745" : "rgb(153, 158, 165)",
+        color: gameResult === "Won" ? "#28a745" : "rgb(153, 158, 165)",
         fontWeight: "bold",
       }}
     >
-      {gameResult === "Succeed" ? "Bonus" : "Lose"}
+      {gameResult === "Won" ? "Bonus" : "Lose"}
     </Typography>
 
     {/* <Typography
@@ -2928,12 +2953,17 @@ const FiveD = ({ timerKey }) => {
             fontSize: "16px",
           }}
         >
-          <CheckCircleIcon
-            style={{
-              color: "#fff", // White Check Icon
-              fontSize: "10px",
-            }}
-          />
+      <Checkbox
+        checked={isChecked}
+        onChange={handleCheckboxChange}
+        size="small"
+        sx={{
+          color: "#fff",
+          '&.Mui-checked': {
+            color: "#fff",
+          },
+        }}
+      />
           <Typography
             variant="body2"
             style={{

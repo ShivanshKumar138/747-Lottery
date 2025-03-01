@@ -116,7 +116,7 @@ const Register = () => {
         login(response.data.token);
         console.log(response);
         alert("Registration complete.");
-        navigate("/login");
+        navigate("/");
       } else if (response.data.msg === "User already exists") {
         alert(response.data.msg);
       } else {
@@ -236,7 +236,7 @@ const Register = () => {
         });
 
         alert("Account setup complete.");
-        navigate("/login");
+        navigate("/");
       } catch (err) {
         console.error(err);
         alert(

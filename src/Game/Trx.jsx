@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import IconButton from "@mui/material/IconButton";
 import Mobile from "../Components/Mobile";
-import { Typography, Grid, Box, TextField } from "@mui/material";
+import { Typography, Grid, Box, TextField, Checkbox } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
@@ -174,7 +174,7 @@ const LotteryAppt = ({ timerKey }) => {
   const [popupQueue, setPopupQueue] = useState([]); // new queue to manage sequential popups
   const [currentBetIndex, setCurrentBetIndex] = useState(0); // tracks current popup being shown
   const [isBig, setIsBig] = useState(true);
-
+const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
 
   const getBackgroundColor = (selectedItem) => {
@@ -677,7 +677,7 @@ const LotteryAppt = ({ timerKey }) => {
       clearInterval(intervalId);
     };
   }, [periodId, lastAlertedPeriodId, domain]);
-
+  console.log("Bets are:",bets);
   useEffect(() => {
     // Only display if there are popups in the queue and the index is within bounds
     if (popupQueue.length > 0 && currentBetIndex < popupQueue.length) {
@@ -695,15 +695,15 @@ const LotteryAppt = ({ timerKey }) => {
       setOpen(true);
 
       // Close popup automatically after 1 second, then move to the next one
-      const timer = setTimeout(() => {
-        setOpen(false);
-        setTimeout(() => {
-          setCurrentBetIndex((prevIndex) => prevIndex + 1); // Increment to show the next popup
-        }, 3000); // Delay before showing the next popup
-      }, 4000); // Popup display duration
+      // const timer = setTimeout(() => {
+      //   setOpen(false);
+      //   setTimeout(() => {
+      //     setCurrentBetIndex((prevIndex) => prevIndex + 1); // Increment to show the next popup
+      //   }, 3000); // Delay before showing the next popup
+      // }, 4000); // Popup display duration
 
-      // Cleanup to avoid memory leaks
-      return () => clearTimeout(timer);
+      // // Cleanup to avoid memory leaks
+      // return () => clearTimeout(timer);
     }
   }, [popupQueue, currentBetIndex]);
 
@@ -712,6 +712,27 @@ const LotteryAppt = ({ timerKey }) => {
   }, [betAmount, multiplier]);
 
   const [lastFiveCharacters, setLastFiveCharacters] = useState([]);
+  const handleCheckboxChange = (event) => {
+    const newCheckedState = event.target.checked;
+    setIsChecked(newCheckedState);
+    
+    // Trigger your function here based on checkbox state
+    if (newCheckedState) {
+      console.log('Auto-close enabled');
+      setIsChecked(false);
+            const timer = setTimeout(() => {
+        setOpen(false);
+        setTimeout(() => {
+          setCurrentBetIndex((prevIndex) => prevIndex + 1);
+          setIsChecked(false)
+        }, 2000);
+      }, 4000);
+      // Your function logic here
+    } else {
+      console.log('Auto-close disabled');
+      // Your alternative function logic here
+    }
+  };
 
   useEffect(() => {
     // Function to fetch the latest period ID's hash
@@ -1991,31 +2012,38 @@ const LotteryAppt = ({ timerKey }) => {
                                   </Typography>
                                 </Grid>
                                 <Grid item xs={3} sx={{ textAlign: "right" }}>
-                               {bet.status !=="pending"?<Box
-                                                                   sx={{
-                                                                     border: 1,
-                                                                     borderColor:
-                                                                       bet.status === "Failed"
-                                                                         ? "error.main"
-                                                                         : "success.main",
-                                                                     borderRadius: 1,
-                                                                     pt: 0.1,
-                                                                     pb: 0.1,
-                                                                     pl: 1,
-                                                                     pr: 1,
-                                                                     display: "inline-block",
-                                                                     mb: 0.5,
-                                                                   }}
-                                                                 >
-                                                                   <Typography
-                                                                     variant="caption"
-                                                                     sx={{
-                                                                       color:bet.winLoss > 0 ? "green" : "red",
-                                                                     }}
-                                                                   >
-                                                                     {bet.status}
-                                                                   </Typography>
-                                                                 </Box>:""}
+                                <Box
+                                                                  sx={{
+                                                                    border: 1,
+                                                                    borderColor:
+                                                                      bet.status === "lost"
+                                                                        ? "error.main"
+                                                                        : bet.status === "won"
+                                                                        ? "success.main"
+                                                                        : "text.primary",
+                                                                    borderRadius: 1,
+                                                                    pt: 0.1,
+                                                                    pb: 0.1,
+                                                                    pl: 1,
+                                                                    pr: 1,
+                                                                    display: "inline-block",
+                                                                    mb: 0.5,
+                                                                  }}
+                                                                >
+                                                                  <Typography
+                                                                    variant="caption"
+                                                                    sx={{
+                                                                      color:
+                                                                        bet.status === "lost"
+                                                                          ? "orange" // Color for Pending status
+                                                                          : bet.winLoss >= 0
+                                                                          ? "green"
+                                                                          : "red",
+                                                                    }}
+                                                                  >
+                                                                    {bet.status==="lost"||bet.status==="won"?bet.status:"Pending"}
+                                                                  </Typography>
+                                                                </Box>
                                   <Typography
                                     variant="body2"
                                     sx={{
@@ -2024,9 +2052,9 @@ const LotteryAppt = ({ timerKey }) => {
                                       fontWeight: "bold",
                                     }}
                                   >
-                               {bet.winLoss < 0
+                               {bet.status === "lost"
     ? `-₹${Math.abs(bet.winLoss)}`
-    : bet.winLoss >=0
+    : bet.status === "won"
         ? `+₹${Math.abs(bet.winLoss)}`
         : ``
 }{" "}
@@ -2340,7 +2368,7 @@ const LotteryAppt = ({ timerKey }) => {
         margin: "1px 0",
       }}
     >
-      ₹{parseFloat(winloss).toFixed(2)}
+     ₹{parseFloat(bets[0]?.winLoss).toFixed(2)}
     </Typography>
 
     <Typography variant="body2" style={{ fontSize: "12px", fontWeight: "normal" }}>
@@ -2361,12 +2389,17 @@ const LotteryAppt = ({ timerKey }) => {
             fontSize: "16px",
           }}
         >
-          <CheckCircleIcon
-            style={{
-              color: "#fff", // White Check Icon
-              fontSize: "10px",
-            }}
-          />
+           <Checkbox
+                           checked={isChecked}
+                           onChange={handleCheckboxChange}
+                           size="small"
+                           sx={{
+                             color: "#fff",
+                             '&.Mui-checked': {
+                               color: "#fff",
+                             },
+                           }}
+                         />
           <Typography
             variant="body2"
             style={{

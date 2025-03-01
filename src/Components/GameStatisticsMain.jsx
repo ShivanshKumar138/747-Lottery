@@ -15,6 +15,7 @@ import {
 import axios from "axios";
 import { domain } from "../Components/config";
 // import icon from "../../games/assets/No data-rafiki.png"
+import LotteryIcon from "../../public/GameHistory/LotteryUnlight.png"
 const GameStatsItem = ({ stats }) => {
   if (!stats) return null; // No data to show if stats is undefined
 
@@ -34,7 +35,7 @@ const GameStatsItem = ({ stats }) => {
           <Grid item>
             <img
               alt="Lottery"
-              src="/assets/png/loterry-13b4d059.png"
+              src={LotteryIcon}
               style={{ marginRight: "8px" }}
             />
           </Grid>
