@@ -62,6 +62,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import { wssdomain } from "../Components/config";
 import { CheckCircleIcon } from "lucide-react";
+import Alert from '@mui/material/Alert';
 const countdownSound = new Audio("/assets/sound.mp3");
 countdownSound.loop = true;
 
@@ -106,9 +107,6 @@ const TabPanel = ({ children, value, index }) => {
   );
 };
 
-const handleRefresh = () => {
-  // Handle refresh logic
-};
 
 const CustomPagination = styled(Pagination)({
   "& .MuiPaginationItem-root": {
@@ -460,6 +458,8 @@ const RowVisualization = ({ data }) => {
 // };
 
 const LotteryAppk = ({ timerKey }) => {
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState(""); // Store message here
     const [agree, setAgree] = useState(false);
   const [activeId, setActiveId] = useState(images[0].id);
   const [selectedTimer, setSelectedTimer] = useState("1Min");
@@ -483,6 +483,20 @@ const LotteryAppk = ({ timerKey }) => {
   // const [overlayContent, setOverlayContent] = useState("");
 const [isChecked, setIsChecked] = useState(false);
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const handleRefresh = () => {
+    // Handle refresh logic
+    // fetchUserData();
+    setSnackbarMessage("Wallet refreshed"); // Set message
+    setSnackbarOpen(true);  // Open snackbar
+  };
+  
+  const handleSnackbarCloser = (event, reason) => {
+    if (reason === "clickaway") {
+        return;
+    }
+    setSnackbarOpen(false);
+  };
 
   useEffect(() => {
     if (timerKey) {
@@ -1815,6 +1829,37 @@ try {
                 <IconButton sx={{ color: "black" }}>
                   <Refresh onClick={handleRefresh} />
                 </IconButton>
+
+                   {snackbarOpen && (
+                                    <Box
+                                        sx={{
+                                            position: "fixed",
+                                            top: "50%",
+                                            left: "50%",
+                                            transform: "translate(-50%, -50%)",
+                                            zIndex: 1500,
+                                            backgroundColor: "rgba(0,0,0,0.6)", // Optional overlay background
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                            width: "100%",
+                                            height: "100%"
+                                        }}
+                                    >
+                                        <Alert
+                                            severity={snackbarMessage.includes("Failed") ? "error" : "success"}
+                                            onClose={handleSnackbarCloser}
+                                            sx={{ 
+                                                width: "fit-content",
+                                                maxWidth: "90%",
+                                                padding: "16px 24px",
+                                                fontSize: "1rem"
+                                            }}
+                                        >
+                                            {snackbarMessage}
+                                        </Alert>
+                                    </Box>
+                                )}
               </Grid>
 
               <Grid

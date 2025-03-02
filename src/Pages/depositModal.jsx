@@ -9,7 +9,6 @@ import {
   Card,
   CardContent,
   LinearProgress,
-  Checkbox,
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -18,221 +17,126 @@ import { domain } from "../Components/config";
 
 const DepositModal = ({ open, onClose }) => {
   const [depositBonuses, setDepositBonuses] = React.useState([]);
-  const [isChecked, setIsChecked] = React.useState(false);
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    const fetchDepositBonuses = async () => {
-      try {
-        const response = await axios.get(`${domain}/all-deposit-bonuses`);
-        setDepositBonuses(response.data);
-      } catch (error) {
-        console.error("Error fetching deposit bonuses:", error);
-      }
-    };
-
     if (open) {
-      fetchDepositBonuses();
+      axios.get(`${domain}/all-deposit-bonuses`).then((response) => {
+        setDepositBonuses(response.data);
+      }).catch((error) => console.error("Error fetching deposit bonuses:", error));
     }
   }, [open]);
 
-  // Check if the modal should be displayed based on stored date
-  React.useEffect(() => {
-    const dismissedDate = localStorage.getItem("depositModalDismissedDate");
-    const today = new Date().toDateString();
+  const handleClose = () => onClose();
 
-    // If today is not equal to the dismissed date, open the modal
-    if (dismissedDate !== today && !open) {
-      onClose(false); // Force modal open
-    }
-  }, [open, onClose]);
-
-  const handleClose = () => {
-    if (isChecked) {
-      const today = new Date().toDateString();
-      localStorage.setItem("depositModalDismissedDate", today);
-    }
-    onClose();
-  };
-
-  const handleCloseIconClick = () => {
-    // Only close the modal without setting the dismissedDate
-    onClose();
-  };
-
-  const handleDeposit = () => {
-    navigate("/recharge");
-  };
-
-  const handleActivity = () => {
-    handleClose(); // Use the same close logic here
-  };
+  const handleDeposit = () => navigate("/recharge");
 
   return (
     <Modal open={open} onClose={handleClose}>
       <Box
         sx={{
           position: "absolute",
-          top: "45%",
+          top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: "100%",
-          maxWidth: 320,
-          bgcolor: "background.paper",
-          overflow: "hidden",
+          width: 320,
+          bgcolor: "white",
           borderRadius: 2,
+          overflow: "hidden",
+          boxShadow: 24,
+          outline: "none"
         }}
       >
-        {/* Header */}
+        {/* Header Section */}
         <Box
           sx={{
-            bgcolor: "#FF952A",
-            padding: 2,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
+            position: "relative",
+            background: "linear-gradient(90deg, #FF8C00, #FF4500)",
+            padding: "16px",
+            textAlign: "center",
             color: "white",
-            position: "sticky",
-            top: 0,
-            zIndex: 1000,
           }}
         >
-          <IconButton
-            edge="end"
-            onClick={handleActivity}
-            sx={{
-              position: "absolute",
-              right: 10,
-              top: 10,
-              color: "white",
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
           <Typography
-            variant="h6"
             sx={{
-              textAlign: "center",
               fontWeight: "bold",
               fontSize: "18px",
             }}
           >
             Extra first deposit bonus
           </Typography>
-          <Typography
-            variant="body2"
-            sx={{
-              textAlign: "center",
-              mt: 1,
-              fontSize: "12px",
-            }}
-          >
+          <Typography sx={{ fontSize: "12px", marginTop: "4px" }}>
             Each account can only receive rewards once
           </Typography>
+          <IconButton
+            onClick={handleClose}
+            sx={{
+              position: "absolute",
+              top: 8,
+              right: 8,
+              color: "white"
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
         </Box>
 
-        {/* Bonus Cards */}
-        <Box
-          sx={{
-            padding: 2,
-            overflowY: "auto",
-            maxHeight: "50vh",
-          }}
-        >
+        {/* Scrollable Bonuses Section */}
+        <Box sx={{ maxHeight: "400px", overflowY: "auto", backgroundColor: "#f9f9f9", padding: "10px" }}>
           {depositBonuses.map((bonus) => (
             <Card
               key={bonus._id}
               sx={{
-                mb: 2,
-                backgroundColor: "#FFF",
+                mb: 1,
+                borderRadius: 2,
                 boxShadow: "none",
-                border: "1px solid #E0E0E0",
-                borderRadius: 1,
+                border: "1px solid #e0e0e0",
+                backgroundColor: "white",
               }}
             >
-              <CardContent>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    mb: 1,
-                  }}
-                >
-                  <Typography
-                    variant="body1"
-                    sx={{ fontSize: "14px", fontWeight: "bold" }}
-                  >
+              <CardContent sx={{ padding: "12px 16px" }}>
+                <Box display="flex" justifyContent="space-between" alignItems="center" mb={0.5}>
+                  <Typography sx={{ fontSize: "14px", fontWeight: "bold" }}>
                     First deposit{" "}
-                    <Typography component="span" sx={{ color: "#FF952A" }}>
+                    <Typography component="span" sx={{ color: "#FF4500", fontWeight: "bold" }}>
                       ₹{bonus.minimumDeposit}
                     </Typography>
                   </Typography>
-                  <Typography
-                    variant="body1"
-                    sx={{
-                      color: "#FF952A",
-                      fontSize: "14px",
-                      fontWeight: "bold",
-                    }}
-                  >
+                  <Typography sx={{ color: "#FF4500", fontWeight: "bold", fontSize: "14px" }}>
                     + ₹{bonus.bonus}
                   </Typography>
                 </Box>
-                <Typography
-                  variant="body2"
-                  sx={{ color: "#7B7B7B", mb: 1, fontSize: "12px" }}
-                >
-                  Deposit ₹{bonus.minimumDeposit} for the first time and receive
-                  ₹{bonus.bonus} bonus
+                <Typography sx={{ fontSize: "12px", color: "#7B7B7B", marginBottom: "8px" }}>
+                  Deposit ₹{bonus.minimumDeposit} for the first time and you will receive ₹{bonus.bonus} bonus
                 </Typography>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    position: "relative",
-                  }}
-                >
+                <Box display="flex" alignItems="center">
                   <LinearProgress
                     variant="determinate"
                     value={0}
                     sx={{
                       flexGrow: 1,
-                      height: 8,
-                      paddingY: "6px",
-                      borderRadius: 4,
-                      backgroundColor: "#E0E0E0",
+                      height: 6,
+                      borderRadius: 3,
+                      backgroundColor: "#e0e0e0",
                       "& .MuiLinearProgress-bar": {
-                        background: "linear-gradient(90deg, #FF952A 0%, #59adff 100%)",
-                      },
+                        background: "linear-gradient(90deg, #FF8C00, #FF4500)",
+                      }
                     }}
                   />
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      position: "absolute",
-                      left: "30%",
-                      top: "50%",
-                      transform: "translate(-50%, -50%)",
-                      color: "#FF952A",
-                      fontWeight: "bold",
-                    }}
-                  >
+                  <Typography sx={{ fontSize: "10px", fontWeight: "bold", color: "#FF4500", marginLeft: "8px" }}>
                     0/{bonus.minimumDeposit}
                   </Typography>
                   <Button
-                    variant="outlined"
                     sx={{
                       ml: 2,
-                      minWidth: 80,
-                      height: 30,
+                      backgroundColor: "#FF4500",
+                      color: "white",
                       fontSize: "12px",
-                      borderColor: "#FF952A",
-                      color: "#FF952A",
+                      height: "30px",
+                      minWidth: "70px",
                       "&:hover": {
-                        borderColor: "#FF952A",
-                        backgroundColor: "rgba(15, 101, 24, 0.04)",
-                      },
+                        backgroundColor: "#FF4500",
+                      }
                     }}
                     onClick={handleDeposit}
                   >
@@ -242,47 +146,6 @@ const DepositModal = ({ open, onClose }) => {
               </CardContent>
             </Card>
           ))}
-        </Box>
-
-        {/* Footer */}
-        <Box
-          sx={{
-            padding: 2,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            borderTop: "1px solid #E0E0E0",
-            bgcolor: "#FFF",
-          }}
-        >
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Checkbox
-              checked={isChecked}
-              onChange={(e) => setIsChecked(e.target.checked)}
-              sx={{
-                color: "#FF952A",
-                "&.Mui-checked": {
-                  color: "#FF952A",
-                },
-              }}
-            />
-            <Typography variant="body2" sx={{ fontSize: "12px" }}>
-              No more reminders today
-            </Typography>
-          </Box>
-          <Button
-            variant="contained"
-            sx={{
-              bgcolor: "#FF952A",
-              color: "white",
-              "&:hover": {
-                bgcolor: "#FF952A",
-              },
-            }}
-            onClick={() => navigate("/activity/FirstRecharge")}
-          >
-            Activity
-          </Button>
         </Box>
       </Box>
     </Modal>

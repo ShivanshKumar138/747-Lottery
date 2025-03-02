@@ -58,6 +58,7 @@ import RemoveIcon from "@mui/icons-material/IndeterminateCheckBox";
 import AddIcon from "@mui/icons-material/AddBox";
 import { CheckCircleIcon } from "lucide-react";
 import { useCallback } from "react";
+import Alert from '@mui/material/Alert';
 const countdownSound = new Audio("/assets/sound.mp3");
 countdownSound.loop = true;
 
@@ -230,7 +231,8 @@ const GameRulesModal = ({ open, handleClose }) => {
 
 const Head = ({ timerKey }) => {
 
-
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState(""); // Store message here
   const [resultColor,setResultColor]=useState();
   const [agree, setAgree] = useState(false);
   const [activeId, setActiveId] = useState(images[0].id);
@@ -388,11 +390,20 @@ const [isChecked, setIsChecked] = useState(false);
 
   const handleRefresh = () => {
     // Handle refresh logic
-    alert("Clicked");
     fetchUserData();
+    setSnackbarMessage("Wallet refreshed"); // Set message
+    setSnackbarOpen(true);  // Open snackbar
   };
 
-  useEffect(() => {
+
+  const handleSnackbarCloser = (event, reason) => {
+    if (reason === "clickaway") {
+        return;
+    }
+    setSnackbarOpen(false);
+};
+  
+useEffect(() => {
     fetchUserData();
   }, [user]);
 
@@ -1012,6 +1023,37 @@ const [isChecked, setIsChecked] = useState(false);
       <IconButton sx={{ color: "black", padding: { xs: "6px", sm: "8px" } }}>
         <Refresh onClick={handleRefresh} />
       </IconButton>
+      {snackbarOpen && (
+    <Box
+        sx={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            zIndex: 1500,
+            backgroundColor: "rgba(0,0,0,0.6)", // Optional overlay background
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            height: "100%"
+        }}
+    >
+        <Alert
+            severity={snackbarMessage.includes("Failed") ? "error" : "success"}
+            onClose={handleSnackbarCloser}
+            sx={{ 
+                width: "fit-content",
+                maxWidth: "90%",
+                padding: "16px 24px",
+                fontSize: "1rem"
+            }}
+        >
+            {snackbarMessage}
+        </Alert>
+    </Box>
+)}
+
     </Grid>
 
     <Grid

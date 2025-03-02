@@ -59,6 +59,7 @@ import { FormControlLabel, Radio } from "@mui/material";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import { CheckCircleIcon } from "lucide-react";
 const countdownSound = new Audio("/assets/sound.mp3");
+import Alert from '@mui/material/Alert';
 countdownSound.loop = true;
 
 const images = [
@@ -133,6 +134,8 @@ const multipliers = [
 ];
 
 const LotteryAppt = ({ timerKey }) => {
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState(""); // Store message here
     const [agree, setAgree] = useState(false);
    const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -410,7 +413,16 @@ const [isChecked, setIsChecked] = useState(false);
 
   const handleRefresh = () => {
     // Handle refresh logic
-    fetchUserData();
+    // fetchUserData();
+    setSnackbarMessage("Wallet refreshed"); // Set message
+    setSnackbarOpen(true);  // Open snackbar
+  };
+  
+  const handleSnackbarCloser = (event, reason) => {
+    if (reason === "clickaway") {
+        return;
+    }
+    setSnackbarOpen(false);
   };
 
   // ...
@@ -856,6 +868,36 @@ const [isChecked, setIsChecked] = useState(false);
                 <IconButton sx={{ color: "black" }}>
                   <Refresh onClick={handleRefresh} />
                 </IconButton>
+                {snackbarOpen && (
+                    <Box
+                        sx={{
+                            position: "fixed",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            zIndex: 1500,
+                            backgroundColor: "rgba(0,0,0,0.6)", // Optional overlay background
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            width: "100%",
+                            height: "100%"
+                        }}
+                    >
+                        <Alert
+                            severity={snackbarMessage.includes("Failed") ? "error" : "success"}
+                            onClose={handleSnackbarCloser}
+                            sx={{ 
+                                width: "fit-content",
+                                maxWidth: "90%",
+                                padding: "16px 24px",
+                                fontSize: "1rem"
+                            }}
+                        >
+                            {snackbarMessage}
+                        </Alert>
+                    </Box>
+                )}
               </Grid>
 
               <Grid

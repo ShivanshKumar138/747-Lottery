@@ -10,14 +10,15 @@ import axios from "axios";
 import { domain } from "./config";
 import { useAuth } from "../contexts/AuthContext"; // Import useAuth hook
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-
+import { Snackbar,Alert } from "@mui/material";
+ // Add state to control Snackbar
 const WalletMain = ({ children }) => {
   const [user, setUser] = useState(null);
   const [depositHistory, setDepositHistory] = useState(null);
   const [withdrawAmount, setWithdrawAmount] = useState(0);
   const [thirdPartyWalletBalance, setThirdPartyWalletBalance] = useState(0); // State for third party wallet balance
   const [jilithirdpartywalletbalance, setJiliRealMemberStatus] = useState(null); // State for JiliReal member status
-
+  const [open, setOpen] = useState(false);
   const totalBalance = useMemo(() => {
     return thirdPartyWalletBalance + (jilithirdpartywalletbalance || 0);
   }, [thirdPartyWalletBalance, jilithirdpartywalletbalance]);
@@ -185,20 +186,7 @@ const WalletMain = ({ children }) => {
         console.log("response", response);
         if (response.data.status === "SC_OK") {
           setThirdPartyWalletBalance(0); // Set third-party wallet balance to 0
-          <Snackbar
-          open={open}
-          autoHideDuration={6000}
-          onClose={handleClose}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        >
-          <Alert 
-            onClose={handleClose} 
-            severity="success" 
-            sx={{ width: '100%' }}
-          >
-            Transfer successful
-          </Alert>
-        </Snackbar>
+          setOpen(true); 
         } else {
           console.error(response.data.message);
         }
@@ -222,20 +210,7 @@ const WalletMain = ({ children }) => {
         );
         if (response.data.success == 1) {
           setJiliRealMemberStatus(0); // Set JiliReal member status to 0
-          <Snackbar
-          open={open}
-          autoHideDuration={6000}
-          onClose={handleClose}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        >
-          <Alert 
-            onClose={handleClose} 
-            severity="success" 
-            sx={{ width: '100%' }}
-          >
-            Transfer successful
-          </Alert>
-        </Snackbar>
+          setOpen(true);
         } else {
           console.error(response.data.message);
         }
@@ -636,6 +611,20 @@ const WalletMain = ({ children }) => {
             <br />
             <br />
           </Box>
+          <Snackbar
+          open={open}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        >
+          <Alert 
+            onClose={handleClose} 
+            severity="success" 
+            sx={{ width: '100%' }}
+          >
+            Transfer successful
+          </Alert>
+        </Snackbar>
 
           {children}
         </Box>

@@ -759,7 +759,7 @@ const SwipeableCards = () => {
 
       {/* My benefits */}
 
-      {/* <div className="my-benefits">
+      <div className="my-benefits">
         <h2 className="my-benefits__title">
           <span className="my-benefits__crown">👑</span> My benefits
         </h2>
@@ -798,7 +798,7 @@ const SwipeableCards = () => {
             </div>
           ))}
         </div>
-      </div> */}
+      </div>
 
       {/* <MyBenefits /> */}
 

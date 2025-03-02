@@ -419,7 +419,7 @@ const Home = ({ children }) => {
   }, []);
 
   const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
-  const [isDepositModalOpen, setDepositModalOpen] = useState(false);
+  const [isDepositModalOpen, setDepositModalOpen] = useState(true);
 
   useEffect(() => {
     // Automatically show NotificationModal 2 seconds after component mounts
